@@ -2,6 +2,6 @@
 
 Dynamically redirect an ASP.NET endpoint to ngrok generated URL. 
 
-Just update the batch files and run ngrok1.bat
+Just update and run ngrok.bat
 
 Demo: https://ngrok.bernardgabon.com/
