@@ -1,0 +1,1 @@
+start cmd.exe /c myNgrok ngrokredirector123 & 3PbYuDWx8udipWqEw2NNc_45MCdkChayGCLAycd5s3L & ngrok authtoken 3PbYuDWx8udipWqEw2NNc_45MCdkChayGCLAycd5s3L & ngrok http 5501 -host-header="localhost:5501" 
