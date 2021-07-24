@@ -5,6 +5,8 @@ class MyNgrok
 {
 	public static void Main(string[] args)
 	{
+		var redirectHost = "https://ngrok.bernardgabon.com";
+		var secret = "YOUR_API_KEY";
 		var isErr = false;
 		var ngrokMsg = "";		
 		do {
@@ -15,8 +17,8 @@ class MyNgrok
 					var forwardUrl = "https://" + s.Split(':')[5].Split('"')[0].Replace("//", "");
 					// var forwardUrl = s.Split(':')[5] + ":" + s.Split(':')[6].Split(',')[0];
 					forwardUrl = forwardUrl.Replace("\"", "");
-					var apikey = args.Length > 0 ? args[0] : "YOUR_HARDCODED_API_KEY";
-					ngrokMsg = client.DownloadString("https://ngrok.bernardgabon.com/?apikey=" + apikey + "&r=" + forwardUrl);
+					var apikey = args.Length > 0 ? args[0] : secret;
+					ngrokMsg = client.DownloadString(redirectHost + "/?apikey=" + apikey + "&r=" + forwardUrl);
 					isErr = false;
 				}
 			} catch 
