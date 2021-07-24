@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Threading;
 
 class MyNgrok
@@ -9,12 +8,12 @@ class MyNgrok
 		var isErr = false;
 		var ngrokMsg = "";		
 		do {
-			try 
-			{
-				using (var client = new WebClient())
+			try {
+				using (var client = new System.Net.WebClient()) 
 				{
 					string s = client.DownloadString("http://127.0.0.1:4040/api/tunnels");
-					var forwardUrl = s.Split(':')[4] + ":" + s.Split(':')[5].Split(',')[0];
+					var forwardUrl = "https://" + s.Split(':')[5].Split('"')[0].Replace("//", "");
+					// var forwardUrl = s.Split(':')[5] + ":" + s.Split(':')[6].Split(',')[0];
 					forwardUrl = forwardUrl.Replace("\"", "");
 					var apikey = args.Length > 0 ? args[0] : "YOUR_HARDCODED_API_KEY";
 					ngrokMsg = client.DownloadString("https://ngrok.bernardgabon.com/?apikey=" + apikey + "&r=" + forwardUrl);
@@ -24,7 +23,7 @@ class MyNgrok
 			{
 				Console.WriteLine("Ngrok tunnelling is not yet available...");
 				isErr = true;
-			 	Thread.Sleep(1000);
+				Thread.Sleep(1000);
 			}
 		} while (isErr);
 			
