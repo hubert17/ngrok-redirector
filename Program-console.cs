@@ -10,7 +10,8 @@ class MyNgrok
 		var secret = "YOUR_API_KEY";
 		var isErr = false;
 		var ngrokMsg = "";
-
+		
+		Console.WriteLine("Requesting ngrok tunnel public URL...");
 		Thread.Sleep(3000);		
 		do {
 			try {
