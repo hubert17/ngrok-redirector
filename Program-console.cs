@@ -9,7 +9,9 @@ class MyNgrok
 		var redirectHost = "https://ngrok.bernardgabon.com";
 		var secret = "YOUR_API_KEY";
 		var isErr = false;
-		var ngrokMsg = "";		
+		var ngrokMsg = "";
+
+		Thread.Sleep(3000);		
 		do {
 			try {
 				using (var client = new System.Net.WebClient()) 
