@@ -20,8 +20,9 @@ class MyNgrok
 					string s = client.DownloadString("http://127.0.0.1:4040/api/tunnels");
 					var forwardUrl = "https://" + s.Split(':')[5].Split('"')[0].Replace("//", "");
 					// var forwardUrl = s.Split(':')[5] + ":" + s.Split(':')[6].Split(',')[0];
-					var apikey = args.Length > 0 && !string.IsNullOrWhiteSpace(args[0]) ? args[0] : secret;
-					ngrokMsg = client.DownloadString(redirectHost + "/?apikey=" + apikey + "&r=" + forwardUrl);
+					var apikey = !string.IsNullOrWhiteSpace(args[0]) ? args[0] : secret;
+					redirectHost = args.Length > 1 && !string.IsNullOrWhiteSpace(args[1]) ? redirectHost + "/" + args[1] : redirectHost;
+					ngrokMsg = client.DownloadString(redirectHost + "?apikey=" + apikey + "&r=" + forwardUrl);
 					Console.WriteLine(ngrokMsg);
 					Thread.Sleep(3000);	
 					isErr = false;
