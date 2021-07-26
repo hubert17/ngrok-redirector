@@ -24,7 +24,7 @@ class MyNgrok
 					redirectHost = args.Length > 1 && !string.IsNullOrWhiteSpace(args[1]) ? redirectHost + "/" + args[1] : redirectHost;
 					ngrokMsg = client.DownloadString(redirectHost + "?apikey=" + apikey + "&r=" + forwardUrl);
 					Console.WriteLine(ngrokMsg);
-					Thread.Sleep(3000);	
+					Thread.Sleep(5000);	
 					isErr = false;
 				}
 			} catch 
