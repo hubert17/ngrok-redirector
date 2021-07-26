@@ -24,36 +24,53 @@ namespace NgrokRedirector
 
             app.UseEndpoints(endpoints =>
             {
-                var redirectHost = "ngrok.bernardgabon.com";
-                var redirect = "redirect";
-                var secret = "YOUR_API_KEY";
-
                 endpoints.MapGet("/", async context =>
                 {
-                    if (!string.IsNullOrEmpty(context.Request.Query["apikey"]))
-                    {
-                        if(context.Request.Query["apikey"].ToString() != secret)
-                            await context.Response.WriteAsync("Forbidden.");
-                        else if(!string.IsNullOrEmpty(context.Request.Query["r"]))
-                        {
-                            var r = context.Request.Query["r"].ToString();
-                            if (!r.StartsWith("http")) r = "https://" + r;
-                            var entryOptions = new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);
-                            cache.Set(redirect, r, entryOptions);
-                            await context.Response.WriteAsync(redirectHost + " is now redirected to " + r);
-                        }
-                        else
-                        {
-                            cache.Remove(redirect);
-                            await context.Response.WriteAsync("Redirect has been cleared.");
-                        }
-                    }
-                    else if (cache.Get(redirect) != null)
-                        context.Response.Redirect(cache.Get(redirect).ToString());                    
-                    else
-                        await context.Response.WriteAsync("Append ?apikey=yourkey&r=forwardingURL to set new redirect.");
+                    await Redirect(context, cache);
+                });
+
+                endpoints.MapGet("/{user}", async context =>
+                {
+                    await Redirect(context, cache);
                 });
             });
+        }
+
+        public async Task Redirect(HttpContext context, IMemoryCache cache)
+        {            
+            var redirectHost = "ngrok.bernardgabon.com";
+            var redirect = "redirect";
+            var secret = "YOUR_API_KEY";
+
+            if (context.Request.RouteValues["user"] != null)
+            {
+                var user = context.Request.RouteValues["user"].ToString();
+                redirectHost += "/" + user;
+                redirect += user;
+            }                   
+            
+            if (!string.IsNullOrEmpty(context.Request.Query["apikey"]))
+            {
+                if (context.Request.Query["apikey"].ToString() != secret && context.Request.RouteValues["user"] == null)
+                    await context.Response.WriteAsync("Forbidden.");
+                else if (!string.IsNullOrEmpty(context.Request.Query["r"]))
+                {
+                    var r = context.Request.Query["r"].ToString();
+                    if (!r.StartsWith("http")) r = "https://" + r;
+                    var entryOptions = new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);
+                    cache.Set(redirect, r, entryOptions);
+                    await context.Response.WriteAsync(redirectHost + " is now redirected to " + r);
+                }
+                else
+                {
+                    cache.Remove(redirect);
+                    await context.Response.WriteAsync("Redirect has been cleared.");
+                }
+            }
+            else if (cache.Get(redirect) != null)
+                context.Response.Redirect(cache.Get(redirect).ToString());
+            else
+                await context.Response.WriteAsync("Append ?apikey=yourkey&r=forwardingURL to set new redirect.");
         }
     }
 }
